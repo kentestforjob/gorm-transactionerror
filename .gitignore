@@ -1,0 +1,10 @@
+tmp/
+mysql/*
+vendor/
+_*
+*.test
+# configs/.env
+.DS_Store
+.vscode/
+engine
+bin/

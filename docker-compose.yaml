@@ -1,0 +1,52 @@
+version: "3.8"
+networks:
+  dummy-network:
+    external: true
+services:
+    
+  mysql:
+    image: mysql:8.0.31
+    container_name: dummy_mysql
+    # command: mysqld --user=root
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    ports:
+      - 3306:3306 
+    environment:
+      MYSQL_DATABASE: dummy_db
+      MYSQL_USER: dummy
+      MYSQL_PASSWORD: 'dummy12345'
+      MYSQL_ROOT_PASSWORD: 'dummy12345'
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
+    networks:
+      dummy-network: {}
+
+  dummy_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dummy_app
+    ports:
+      - 8003:8003
+    depends_on:
+      # - mysql
+      mysql:
+        condition: service_healthy
+
+    networks:
+      dummy-network: {}
+    volumes:
+      - ./:/app
+      - ./configs/app.json:/app/configs/app.json
+  
+  adminer:
+    image: adminer
+    container_name: dummy_adminer
+    # restart: always
+    ports:
+      - 8033:8033
+    networks:
+      dummy-network: {}

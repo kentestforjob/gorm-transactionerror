@@ -1,0 +1,68 @@
+openapi: 3.0.2
+info:
+  title: API Integration documentation
+  description: |
+
+
+  version: 1.0.0
+  license:
+    name: Dummy
+servers:
+  - url: http://127.0.0.1:8003/api/
+
+security:
+  - bearerAuth: []
+tags:
+  - name: dummy
+  
+paths:
+ 
+  /dummy/list:
+    get:
+      tags:
+      - dummy
+      operationId:  dummy-list
+      summary: "🟢"
+      description: |
+              
+      responses:
+        # '500':
+        #     $ref: '#/components/responses/500'
+        '200':
+          description: OK
+  
+  /dummy/update:
+    post:
+      tags:
+      - dummy
+      operationId:  dummy-update
+      security:
+        - bearerAuth: []
+      summary: "🟢"
+      description: |
+
+      requestBody:
+        required: true
+        description: |
+         
+        content:
+          application/json:
+            schema:
+              type: object
+              description: ""
+              properties:
+                user_id:
+                  type: integer
+              example:   
+                user_id: 1
+                email: abc@gmail.com
+              required:
+                - id
+
+              
+      responses:
+        # '500':
+        #     $ref: '#/components/responses/500'
+        '200':
+          description: OK
+

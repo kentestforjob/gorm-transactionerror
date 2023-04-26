@@ -1,0 +1,21 @@
+{
+    "server": {
+      "address": ":8003"
+    },
+    "context":{
+      "timeout":2
+    },
+    "database": {
+        "host": "mysql",
+        "port": "3306",
+        "user": "dummy",
+        "pass": "dummy12345",
+        "name": "dummy_db"
+    },
+    "jwt": {
+      "sign_key": "-As2Gpj5LQYDJTdia3qfogKJY_yYveAun1sOGDKG-lw",
+      "expires_in": 3600,
+      "refresh_expiry_days": 365
+    }
+}
+  
