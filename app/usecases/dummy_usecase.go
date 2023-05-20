@@ -34,14 +34,16 @@ func NewDummyUseCase(db *gorm.DB, repo repositories.InterfaceDummyRepository) In
 	}
 }
 
+// WithTrx - Warning: Using this method can also cause transaction issue since
+// global repo instance is being replaced
 func (m *dummyUseCase) WithTrx(trxHandle *gorm.DB) InterfaceDummyUsecase {
 	m.dummyRepo = m.dummyRepo.WithTrx(trxHandle)
 	return m
 }
 
 func (m *dummyUseCase) FindAll() ([]domains.Dummy, error) {
-	newssubscription_list, err := m.dummyRepo.FindAll()
-	return newssubscription_list, err
+	newsSubscriptionList, err := m.dummyRepo.FindAll()
+	return newsSubscriptionList, err
 }
 
 func (m *dummyUseCase) FindById(id uint32) (domains.Dummy, error) {
@@ -67,13 +69,15 @@ func (m *dummyUseCase) Create(model *domains.Dummy) error {
 	return err
 }
 
-func (m *dummyUseCase) UpdateDummy(user_id uint32, email string) error {
+func (m *dummyUseCase) UpdateDummy(userId uint32, email string) error {
 	tx := m.db.Begin()
 	if err := tx.Error; err != nil {
 		fmt.Println("transaction error;")
 		return err
 	}
-	dummy, err := m.dummyRepo.WithTrx(tx).FindById(user_id)
+
+	repoWithTx := m.dummyRepo.WithTrx(tx)
+	dummy, err := repoWithTx.FindById(userId)
 	if err != nil {
 		fmt.Println("Rollback: query error")
 		tx.Rollback()
@@ -81,7 +85,7 @@ func (m *dummyUseCase) UpdateDummy(user_id uint32, email string) error {
 	}
 
 	dummy.Email = email
-	err = m.dummyRepo.WithTrx(tx).Update(&dummy)
+	err = repoWithTx.Update(&dummy)
 	if err != nil {
 		fmt.Println("Rollback: update error")
 		tx.Rollback()
@@ -103,10 +107,12 @@ func (m *dummyUseCase) Update(model *domains.Dummy) error {
 		fmt.Println("tx.Error;")
 		return err
 	}
+
+	repoWithTx := m.dummyRepo.WithTrx(tx)
 	// ....
 	// other usecase code
 	// ....
-	err := m.dummyRepo.WithTrx(tx).Update(model)
+	err := repoWithTx.Update(model)
 	if err != nil {
 		tx.Rollback()
 		return err

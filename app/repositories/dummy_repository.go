@@ -25,7 +25,7 @@ type dummyRepository struct {
 	Conn *gorm.DB
 }
 
-// GORM - delcare repository
+// NewDummy GORM - declare repository
 func NewDummy(conn *gorm.DB) InterfaceDummyRepository {
 	return &dummyRepository{
 		Conn: conn,
@@ -37,8 +37,18 @@ func (m *dummyRepository) WithTrx(trxHandle *gorm.DB) InterfaceDummyRepository {
 		log.Print("Transaction Database not found")
 		return m
 	}
-	m.Conn = trxHandle
-	return m
+
+	// ToDo Here is your error, you replace global db connection with transaction of a particular request
+	// Once the transaction is closed, you won't be able to handle another request to the database
+	// In order to fix this issue, please return a new repository instance initiated with trxHandle. However,
+	// this is not the best practice. I'd better move opening/closing transaction to the repository level
+
+	// m.Conn = trxHandle
+	// return m
+
+	return &dummyRepository{
+		Conn: trxHandle,
+	}
 }
 
 func (m *dummyRepository) FindAll() ([]domains.Dummy, error) {
