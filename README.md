@@ -9,8 +9,8 @@ sql: transaction has already been committed or rolled back error when use transa
 ### How do start the program? ###
 
 1. Need to create docker network: `docker network create dummy-network`
-2. Start the program by execute `docker composer build`
-3. Start the program by execute `docker composer up`
+2. Start the program by execute `docker compose build`
+3. Start the program by execute `docker compose up`
 
 ### How to simulate the problem ###
 1. call api/dummy/update api which will perform transaction 
